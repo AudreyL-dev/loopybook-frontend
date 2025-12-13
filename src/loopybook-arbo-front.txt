@@ -1,0 +1,156 @@
+Structure du dossier pour le volume OS
+Le numéro de série du volume est 340A-F267
+C:.
+|   App.css
+|   App.tsx
+|   index.css
+|   loopybook-arbo-front.txt
+|   main.tsx
+|   
++---assets
+|   |   react.svg
+|   |   
+|   +---avatars
+|   |   +---admin
+|   |   |       admin-01.png
+|   |   |       admin-02.png
+|   |   |       
+|   |   +---child
+|   |   |       child-01.png
+|   |   |       child-02.png
+|   |   |       child-03.png
+|   |   |       child-04.png
+|   |   |       child-05.png
+|   |   |       child-06.png
+|   |   |       child-07.png
+|   |   |       child-08.png
+|   |   |       child-09.png
+|   |   |       child-10.png
+|   |   |       child-11.png
+|   |   |       child-12.png
+|   |   |       child-13.png
+|   |   |       child-14.png
+|   |   |       child-15.png
+|   |   |       child-16.png
+|   |   |       child-17.png
+|   |   |       child-18.png
+|   |   |       child-19.png
+|   |   |       child-20.png
+|   |   |       child-21.png
+|   |   |       child-22.png
+|   |   |       child-23.png
+|   |   |       child-24.png
+|   |   |       child-25.png
+|   |   |       child-26.png
+|   |   |       child-27.png
+|   |   |       child-28.png
+|   |   |       child-29.png
+|   |   |       child-30.png
+|   |   |       child-31.png
+|   |   |       child-32.png
+|   |   |       child-33.png
+|   |   |       child-34.png
+|   |   |       
+|   |   +---employee
+|   |   |       employee-01.png
+|   |   |       employee-02.png
+|   |   |       employee-03.png
+|   |   |       employee-04.png
+|   |   |       employee-05.png
+|   |   |       employee-06.png
+|   |   |       employee-07.png
+|   |   |       employee-08.png
+|   |   |       employee-10.png
+|   |   |       employee-11.png
+|   |   |       employee-12.png
+|   |   |       employee-13.png
+|   |   |       employee-14.png
+|   |   |       employee-15.png
+|   |   |       employee-16.png
+|   |   |       
+|   |   \---parent
+|   |           adult-01.png
+|   |           adult-02.png
+|   |           adult-03.png
+|   |           adult-04.png
+|   |           adult-05.png
+|   |           adult-06.png
+|   |           adult-08.png
+|   |           adult-09.png
+|   |           adult-10.png
+|   |           adult-11.png
+|   |           adult-12.png
+|   |           adult-13.png
+|   |           adult-14.png
+|   |           adult-15.png
+|   |           adult-16.png
+|   |           
+|   \---logo
+|           logo-loopybook-animate.gif
+|           logo-loopybook.png
+|           logo-loopybook.svg
+|           
++---components
+|   +---layout
+|   |       Header.tsx
+|   |       ProtectedRoute.tsx
+|   |       
+|   \---ui
+|           AvatarPicker.tsx
+|           
++---config
+|       avatarOptions.ts
+|       
++---contexts
+|       AuthContext.tsx
+|       ProfileContext.tsx
+|       
++---features
+|   +---admin
+|   |   +---api
+|   |   |       adminUsersApi.ts
+|   |   |       
+|   |   +---books
+|   |   |       AdminBooksSection.tsx
+|   |   |       
+|   |   +---categories
+|   |   +---dashboard
+|   |   \---users
+|   |           AdminUsersSection.tsx
+|   |           
+|   +---auth
+|   |       authService.ts
+|   |       
+|   +---books
+|   |       BookList.tsx
+|   |       bookService.ts
+|   |       BookTopRatedList.tsx
+|   |       
+|   +---cart
+|   |       cartService.ts
+|   |       
+|   +---child
+|   |       childService.ts
+|   |       
+|   +---recommendation
+|   |       recommendationService.ts
+|   |       
+|   \---search
++---pages
+|       AdminSpace.tsx
+|       AuthPage.tsx
+|       BookDetails.tsx
+|       BooksPage.tsx
+|       ChildSpace.tsx
+|       EmployeeSpace.tsx
+|       HomePage.tsx
+|       LegalNotice.tsx
+|       Library.tsx
+|       Login.jsx
+|       ParentSpace.tsx
+|       PrivacyPolicy.tsx
+|       ProfileSelector.tsx
+|       RegisterPage.tsx
+|       SearchPage.tsx
+|       
+\---services

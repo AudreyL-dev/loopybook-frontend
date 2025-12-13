@@ -1,0 +1,151 @@
+@import "tailwindcss";
+
+/* ============================================================
+   TAILWIND THEME (v4)
+   Ici on définit les couleurs utilisables dans les classes :
+   bg-mint, text-kiwi, from-apricot, to-mint, etc.
+   ============================================================ */
+@theme {
+  --color-mint: #3DCCC7;
+  --color-kiwi: #AEEA7C;
+  --color-apricot: #FFD67B;
+  --color-gray: #1E1E1E;
+}
+
+/* ============================================================
+   VARIABLES CSS LOOPYBOOK
+   Celles-ci sont utilisées dans tes composants personnalisés
+   (boutons, gradients, cartes, etc.)
+   ============================================================ */
+:root {
+  --kiwi: #AEEA7C;
+  --kiwi-dark: #9BD65A;
+
+  --apricot: #FFD67B;
+  --apricot-dark: #FFB347;
+
+  --mint: #3DCCC7;
+  --mint-dark: #2BB3AE;
+  --gray: #1E1E1E;
+}
+
+/* ============================================================
+   POLICES
+   ============================================================ */
+/* Polices globales */
+/* Police par défaut pour tout le site */
+body {
+  font-family: "Atkinson Hyperlegible", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+}
+
+/* Police pour les titres */
+.font-title {
+  font-family: "Cherry Bomb One", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", cursive;
+}
+
+/* Police pour les boutons (séparée au cas où tu veuilles changer plus tard) */
+.font-button {
+  font-family: "Cherry Bomb One", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", cursive;
+}
+
+/* ============================================================
+   BOUTONS LOOPYBOOK
+   ============================================================ */
+
+.btn-primary {
+  background: linear-gradient(to right, var(--kiwi), var(--kiwi-dark));
+  color: #2d2d2d;
+  padding: 12px 24px;
+  border-radius: 16px;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s;
+}
+
+.btn-secondary {
+  background: linear-gradient(to right, var(--apricot), var(--apricot-dark));
+  color: #2d2d2d;
+  padding: 12px 24px;
+  border-radius: 16px;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s;
+}
+
+.btn-accent {
+  background: linear-gradient(to right, var(--mint), var(--mint-dark));
+  color: white;
+  padding: 12px 24px;
+  border-radius: 16px;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+/* Effet hover */
+@media (hover: hover) {
+  .btn-primary:hover,
+  .btn-secondary:hover,
+  .btn-accent:hover {
+    transform: scale(1.05);
+  }
+}
+
+/* ============================================================
+   CARTES (Pourquoi LoopyBook ? / Livres populaires)
+   ============================================================ */
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s;
+}
+
+@media (hover: hover) {
+  .card:hover {
+    transform: translateY(-4px);
+  }
+}
+
+/* ============================================================
+   FOND "FEUILLE DE CAHIER" (section centre)
+   ============================================================ */
+.paper-section {
+  background-color: #fffdf7;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(148, 163, 184, 0.25) 0,
+    rgba(148, 163, 184, 0.25) 1px,
+    transparent 1px,
+    transparent 32px
+  );
+}
+
+/* ============================================================
+   GRAND DÉGRADÉ HERO (haut de page)
+   ============================================================ */
+.gradient-bg {
+  background-image: linear-gradient(
+    135deg,
+    var(--kiwi) 0%,
+    var(--apricot) 40%,
+    var(--mint) 100%
+  );
+}
+
+/* ============================================================
+   HOVER DES LIVRES (card de livres populaires)
+   ============================================================ */
+.book-hover {
+  transition: transform 0.3s ease-out;
+}
+
+@media (hover: hover) {
+  .book-hover:hover {
+    transform: translateY(-8px) rotate(-1deg);
+  }
+}
