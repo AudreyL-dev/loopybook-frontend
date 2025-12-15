@@ -39,7 +39,7 @@ const HomePage: React.FC = () => {
                         <Link to="/auth" className="btn-primary">
                             Commencer l&apos;aventure
                         </Link>
-                        <Link to="/search" className="btn-secondary">
+                        <Link to="/books" className="btn-secondary">
                             Découvrir les livres
                         </Link>
                     </div>

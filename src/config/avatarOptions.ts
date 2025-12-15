@@ -58,7 +58,7 @@ const adminImages = import.meta.glob(
     }
 );
 
-// Palette de couleurs dispo pour les avatars
+// Palette de couleurs disponible pour les avatars
 export const AVATAR_COLORS = [
     "#AEEA7C", // kiwi
     "#FFD67B", // apricot
