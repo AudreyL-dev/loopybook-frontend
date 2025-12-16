@@ -3,7 +3,7 @@
 // Cette page peut être affichée en mode parent (prix) ou enfant (bouton "J'aime").
 
 import React, { useEffect, useMemo, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import Header from "../components/layout/Header.tsx";
 
 type ViewerMode = "parent" | "child";
@@ -240,9 +240,9 @@ const BooksPage: React.FC = () => {
                                             {/* Badge note (on le garde aussi en mode enfant) */}
                                             {rating !== null && (
                                                 <span className="absolute top-2 right-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/90 text-[10px] font-semibold shadow-sm">
-                          <span>★</span>
-                          <span>{rating.toFixed(1)}</span>
-                        </span>
+                                                    <span>★</span>
+                                                    <span>{rating.toFixed(1)}</span>
+                                                </span>
                                             )}
 
                                             {/* Indicateurs carrousel */}
@@ -271,12 +271,12 @@ const BooksPage: React.FC = () => {
                                         </p>
 
                                         <div className="flex flex-wrap items-center gap-2 mt-2">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-700">
-                        {formatAudience(book.audience)}
-                      </span>
+                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-700">
+                                                {formatAudience(book.audience)}
+                                            </span>
                                             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#3DCCC7]/10 text-slate-800">
-                        {formatLanguage(book.writingLanguage)}
-                      </span>
+                                                {formatLanguage(book.writingLanguage)}
+                                            </span>
                                         </div>
 
                                         {book.summary && (
@@ -285,21 +285,32 @@ const BooksPage: React.FC = () => {
                                             </p>
                                         )}
 
+                                        {/* Bouton En voir plus (même style que J’aime) */}
+                                        <div className="mt-3 flex justify-center">
+                                            <Link
+                                                to={`/books/${book.id}`}
+                                                state={{ viewerMode, childId: locationState.childId }}
+                                                className="rounded-full bg-[#AEEA7C] px-4 py-2 text-[12px] font-bold text-slate-900 hover:brightness-95 active:brightness-90 transition"
+                                            >
+                                                En voir plus
+                                            </Link>
+                                        </div>
+
                                         {/* Bas de carte : mode parent vs mode enfant */}
                                         {viewerMode === "parent" ? (
                                             <div className="mt-3 pt-2 flex items-center justify-between border-t border-slate-100">
-                        <span className="text-sm font-semibold text-emerald-600">
-                          {formatPrice(book.price)}
-                        </span>
+                                                <span className="text-sm font-semibold text-emerald-600">
+                                                    {formatPrice(book.price)}
+                                                </span>
 
                                                 {isAvailable ? (
                                                     <span className="text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-full px-2 py-0.5">
-                            En stock
-                          </span>
+                                                        En stock
+                                                    </span>
                                                 ) : (
                                                     <span className="text-[10px] font-medium text-slate-500 bg-slate-50 border border-slate-100 rounded-full px-2 py-0.5">
-                            Indisponible
-                          </span>
+                                                        Indisponible
+                                                    </span>
                                                 )}
                                             </div>
                                         ) : (
@@ -319,7 +330,7 @@ const BooksPage: React.FC = () => {
                         })}
                     </section>
                 )}
-            </main>s
+            </main>
         </div>
     );
 };

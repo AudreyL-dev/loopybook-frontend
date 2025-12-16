@@ -88,6 +88,14 @@ const AuthPage: React.FC = () => {
             return;
         }
 
+        const trimmedIdentifier = identifier.trim();
+
+        if (!trimmedIdentifier) {
+            setError("Champ obligatoire.");
+            setStep("IDENTIFIER");
+            return;
+        }
+
         if (!password) {
             setError("Mot de passe obligatoire.");
             return;
@@ -95,15 +103,15 @@ const AuthPage: React.FC = () => {
 
         setLoading(true);
         try {
-            const success = await login(identifier, password);
+            const success = await login(trimmedIdentifier, password);
 
             if (!success) {
                 setError("Identifiants invalides.");
                 return;
             }
 
-            // Choix de la route selon le type + rôle (décision côté front uniquement)
-            let targetPath = "/profiles"; // par défaut : parent / utilisateur
+            // Détermination de la route cible
+            let targetPath = "/profiles"; // parent par défaut
 
             if (identifierInfo.identifierType === "EMPLOYEE") {
                 const roles = identifierInfo.roles ?? [];
@@ -112,10 +120,13 @@ const AuthPage: React.FC = () => {
                     targetPath = "/admin";
                 } else if (roles.includes("ROLE_EMPLOYEE")) {
                     targetPath = "/employee";
+                } else {
+                    // Sécurité : si jamais roles est vide/inattendu
+                    targetPath = "/employee";
                 }
             }
 
-            navigate(targetPath);
+            navigate(targetPath, { replace: true });
         } catch (err) {
             console.error(err);
             setError("Erreur lors de la connexion. Réessayer plus tard.");

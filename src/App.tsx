@@ -79,7 +79,7 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
-        <Route path="/book/:id" element={<BookDetails />} />
+        <Route path="/books/:id" element={<BookDetails />} />
       </Routes>
         </ProfileProvider>
     </AuthProvider>

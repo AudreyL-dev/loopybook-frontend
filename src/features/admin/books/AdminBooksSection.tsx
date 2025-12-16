@@ -569,6 +569,170 @@ const AdminBooksSection: React.FC = () => {
                                         <option value="en">Anglais</option>
                                     </select>
                                 </div>
+                                {/* Éditeur */}
+                                <div>
+                                    <label className="block text-xs font-medium text-slate-700 mb-1">
+                                        Éditeur
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={editingBook.publisher ?? ""}
+                                        onChange={(event) =>
+                                            setEditingBook((prev) => (prev ? { ...prev, publisher: event.target.value } : prev))
+                                        }
+                                        className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#A93AFF]"
+                                    />
+                                </div>
+
+                                {/* Collection */}
+                                <div>
+                                    <label className="block text-xs font-medium text-slate-700 mb-1">
+                                        Collection
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={editingBook.collectionName ?? ""}
+                                        onChange={(event) =>
+                                            setEditingBook((prev) =>
+                                                prev ? { ...prev, collectionName: event.target.value } : prev
+                                            )
+                                        }
+                                        className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#A93AFF]"
+                                    />
+                                </div>
+
+                                {/* Nombre de pages */}
+                                <div>
+                                    <label className="block text-xs font-medium text-slate-700 mb-1">
+                                        Pages
+                                    </label>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        value={editingBook.pageCount ?? ""}
+                                        onChange={(event) =>
+                                            setEditingBook((prev) =>
+                                                prev
+                                                    ? { ...prev, pageCount: event.target.value === "" ? undefined : Number(event.target.value) }
+                                                    : prev
+                                            )
+                                        }
+                                        className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#A93AFF]"
+                                    />
+                                </div>
+
+                                {/* Date de publication */}
+                                <div>
+                                    <label className="block text-xs font-medium text-slate-700 mb-1">
+                                        Publication
+                                    </label>
+                                    <input
+                                        type="date"
+                                        value={editingBook.publicationDate ?? ""}
+                                        onChange={(event) =>
+                                            setEditingBook((prev) => (prev ? { ...prev, publicationDate: event.target.value } : prev))
+                                        }
+                                        className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#A93AFF]"
+                                    />
+                                </div>
+
+                                {/* ISBN */}
+                                <div>
+                                    <label className="block text-xs font-medium text-slate-700 mb-1">
+                                        ISBN
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={editingBook.isbn ?? ""}
+                                        onChange={(event) =>
+                                            setEditingBook((prev) => (prev ? { ...prev, isbn: event.target.value } : prev))
+                                        }
+                                        className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#A93AFF]"
+                                    />
+                                </div>
+
+                                {/* EAN */}
+                                <div>
+                                    <label className="block text-xs font-medium text-slate-700 mb-1">
+                                        EAN
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={editingBook.ean ?? ""}
+                                        onChange={(event) =>
+                                            setEditingBook((prev) => (prev ? { ...prev, ean: event.target.value } : prev))
+                                        }
+                                        className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#A93AFF]"
+                                    />
+                                </div>
+
+                                {/* Quality score */}
+                                <div>
+                                    <label className="block text-xs font-medium text-slate-700 mb-1">
+                                        Qualité (0–10)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        step="0.1"
+                                        min="0"
+                                        max="10"
+                                        value={editingBook.qualityScore ?? ""}
+                                        onChange={(event) =>
+                                            setEditingBook((prev) =>
+                                                prev
+                                                    ? { ...prev, qualityScore: event.target.value === "" ? undefined : Number(event.target.value) }
+                                                    : prev
+                                            )
+                                        }
+                                        className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#A93AFF]"
+                                    />
+                                </div>
+
+                                {/* Disponible */}
+                                <div className="flex items-center gap-2 mt-6">
+                                    <input
+                                        id="available"
+                                        type="checkbox"
+                                        checked={Boolean(editingBook.available)}
+                                        onChange={(event) =>
+                                            setEditingBook((prev) => (prev ? { ...prev, available: event.target.checked } : prev))
+                                        }
+                                        className="h-4 w-4"
+                                    />
+                                    <label htmlFor="available" className="text-xs font-medium text-slate-700">
+                                        Disponible à la vente
+                                    </label>
+                                </div>
+
+                                {/* Cover front */}
+                                <div className="md:col-span-2">
+                                    <label className="block text-xs font-medium text-slate-700 mb-1">
+                                        URL couverture (recto)
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={editingBook.coverUrlFront ?? ""}
+                                        onChange={(event) =>
+                                            setEditingBook((prev) => (prev ? { ...prev, coverUrlFront: event.target.value } : prev))
+                                        }
+                                        className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#A93AFF]"
+                                    />
+                                </div>
+
+                                {/* Cover back */}
+                                <div className="md:col-span-2">
+                                    <label className="block text-xs font-medium text-slate-700 mb-1">
+                                        URL couverture (verso)
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={editingBook.coverUrlBack ?? ""}
+                                        onChange={(event) =>
+                                            setEditingBook((prev) => (prev ? { ...prev, coverUrlBack: event.target.value } : prev))
+                                        }
+                                        className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#A93AFF]"
+                                    />
+                                </div>
                             </div>
 
                             {/* Résumé */}
