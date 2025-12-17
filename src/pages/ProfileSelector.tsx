@@ -1,8 +1,5 @@
 // src/pages/ProfileSelector.tsx
-// Sélecteur de profil LoopyBook (LOOP-7)
-// - Charge les enfants du parent connecté depuis le backend
-// - Affiche chaque enfant dans une carte comme "Ajouter un enfant" / "Espace Adulte"
-// - Met à jour le ProfileContext pour que le Header affiche l’avatar du profil actif
+// Sélecteur de profil LoopyBook (LOOP-7 + LOOP-64)
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +12,7 @@ import {
     type ChildProfile,
 } from "../features/child/childService";
 import { AVATARS_BY_PROFILE } from "../config/avatarOptions";
+import ParentPinGate from "../features/parent/ParentPinGate";
 
 const ProfileSelector = () => {
     const { user } = useAuth();
@@ -25,16 +23,16 @@ const ProfileSelector = () => {
     const [loadingChildren, setLoadingChildren] = useState(false);
     const [childrenError, setChildrenError] = useState<string | null>(null);
 
-    // Avatars enfants disponibles (fallback si avatarUrl n'est pas exploitable)
+    // LOOP-64 : affichage de l'écran PIN
+    const [showParentPinGate, setShowParentPinGate] = useState(false);
+
     const childAvatars = AVATARS_BY_PROFILE.child;
 
-    // Nom affiché sur la carte adulte : pseudo > prénom > libellé par défaut
     const parentDisplayName =
         (user?.username && user.username.trim()) ||
         (user?.firstName && user.firstName.trim()) ||
         "Espace Adulte";
 
-    // Fonction utilitaire pour calculer l'âge à partir de la date de naissance
     const computeAge = (birthDate: string | null | undefined): number | null => {
         if (!birthDate) return null;
         const date = new Date(birthDate);
@@ -50,7 +48,6 @@ const ProfileSelector = () => {
         return age;
     };
 
-    // Chargement des enfants du parent connecté
     useEffect(() => {
         if (!user) return;
 
@@ -58,9 +55,7 @@ const ProfileSelector = () => {
         setChildrenError(null);
 
         fetchChildrenByParent(user.id)
-            .then((data) => {
-                setChildren(data);
-            })
+            .then(setChildren)
             .catch((error) => {
                 console.error("Erreur chargement enfants :", error);
                 setChildrenError(
@@ -72,15 +67,8 @@ const ProfileSelector = () => {
             });
     }, [user]);
 
-    /**
-     * Clic sur une carte enfant
-     * - met à jour le profil actif (ProfileContext)
-     * - redirige vers /child/:profileId
-     */
     const handleChildClick = (child: ChildProfile, index: number) => {
         const age = computeAge(child.birthDate);
-
-        // Fallback avatar (si URL de la BDD inutilisable côté front)
         const fallbackAvatar = childAvatars[index % childAvatars.length];
         const avatarSrc = child.avatarUrl || fallbackAvatar.src;
         const avatarBg = child.avatarColor || "#AEEA7C";
@@ -99,10 +87,18 @@ const ProfileSelector = () => {
 
     /**
      * Clic sur la carte "Espace Adulte"
+     * LOOP-64 :
+     * - si hasPin === true -> écran PIN
+     * - sinon -> accès direct
      */
     const handleParentClick = () => {
         if (!user) {
             navigate("/auth");
+            return;
+        }
+
+        if (user.hasPin) {
+            setShowParentPinGate(true);
             return;
         }
 
@@ -117,24 +113,31 @@ const ProfileSelector = () => {
         navigate("/parent");
     };
 
-    /**
-     * Clic sur "Ajouter un enfant"
-     */
     const handleAddChildClick = () => {
         if (!user) {
             navigate("/auth");
             return;
         }
-
         navigate("/parent");
     };
+
+    /**
+     * Si le PIN est requis, on bloque ici et on affiche l'écran PIN
+     */
+    if (showParentPinGate) {
+        return (
+            <>
+                <Header />
+                <ParentPinGate />
+            </>
+        );
+    }
 
     return (
         <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#AEEA7C]/20 via-[#3DCCC7]/15 to-[#FFD67B]/20">
             <Header />
 
             <main className="flex-1 container px-4 py-10">
-                {/* Titre + sous-titre */}
                 <div className="text-center mb-10">
                     <h1 className="text-3xl font-bold text-slate-800 mb-2 font-comic">
                         Qui lit aujourd&apos;hui ?
@@ -144,7 +147,6 @@ const ProfileSelector = () => {
                     </p>
                 </div>
 
-                {/* Messages globaux si besoin */}
                 {loadingChildren && (
                     <p className="text-sm text-slate-500 text-center mb-4">
                         Chargement des profils enfants...
@@ -157,9 +159,7 @@ const ProfileSelector = () => {
                     </p>
                 )}
 
-                {/* Grille de cartes exactement comme la maquette */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
-                    {/* Cartes enfants (une carte par enfant, même design que les autres) */}
                     {children.map((child, index) => {
                         const age = computeAge(child.birthDate);
                         const fallbackAvatar = childAvatars[index % childAvatars.length];
@@ -195,7 +195,6 @@ const ProfileSelector = () => {
                         );
                     })}
 
-                    {/* Carte "Ajouter un enfant" */}
                     <button
                         type="button"
                         onClick={handleAddChildClick}
@@ -214,7 +213,6 @@ const ProfileSelector = () => {
                         </div>
                     </button>
 
-                    {/* Carte "Espace Adulte" */}
                     <button
                         type="button"
                         onClick={handleParentClick}
@@ -238,18 +236,12 @@ const ProfileSelector = () => {
                             <div className="font-semibold text-slate-800 mb-1">
                                 {parentDisplayName}
                             </div>
-                            <div className="text-xs text-slate-500">Gestion &amp; Achats</div>
+                            <div className="text-xs text-slate-500">
+                                Gestion &amp; Achats
+                            </div>
                         </div>
                     </button>
                 </div>
-
-                {/* Si aucun enfant, on laisse quand même les cartes "Ajouter" + "Adulte" dans la grille */}
-                {!loadingChildren && !childrenError && children.length === 0 && (
-                    <p className="text-sm text-slate-500 text-center mt-4">
-                        Aucun profil enfant pour le moment. Vous pouvez en créer un via
-                        &quot;Ajouter un enfant&quot;.
-                    </p>
-                )}
             </main>
         </div>
     );
