@@ -28,6 +28,12 @@ interface AuthUser {
     avatarColor?: string | null;
     avatarUrl?: string | null;
     token: string;
+
+    /**
+     * LOOP-64 : indique si le parent a déjà configuré un code PIN.
+     * (toujours false pour admin/employee)
+     */
+    hasPin: boolean;
 }
 
 interface AuthContextValue {
@@ -60,28 +66,28 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         try {
             const data: LoginResponse = await loginParent({ email, password });
 
-            // On nettoie les champs pour éviter les espaces chelous
             const username = data.username?.trim() || null;
             const firstName = data.firstName?.trim() || null;
 
-            // Rôle très simplifié pour l’instant
             let role: UserRole = "parent";
             if (email.startsWith("ADM-")) role = "admin";
             else if (email.startsWith("EMP-")) role = "employee";
 
-            // Pour debug si besoin : tu peux laisser ça temporairement
-            // console.log("LoginResponse backend :", data);
+            // LOOP-64 : seul un parent peut avoir un PIN d'accès à l'espace parent
+            const hasPin = role === "parent" ? Boolean((data as any).hasPin) : false;
 
             setUser({
-                id: data.userId,                       // number directement
+                id: data.userId,
                 email: data.email,
                 role,
-                name: username || firstName || data.email, // ordre de priorité : pseudo > prénom > email
+                name: username || firstName || data.email,
                 username,
                 firstName,
                 avatarColor: data.avatarColor ?? null,
                 avatarUrl: data.avatarUrl ?? null,
                 token: data.token,
+
+                hasPin,
             });
 
             return true;
