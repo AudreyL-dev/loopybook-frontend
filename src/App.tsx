@@ -19,71 +19,92 @@ import BooksPage from "./pages/BooksPage";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import LegalNotice from "./pages/LegalNotice";
 
+// NOUVEAU : page wishlist enfant
+import ChildWishlistPage from "./pages/ChildWishlistPage";
+
 const App: React.FC = () => {
-  return (
-    <AuthProvider>
-        <ProfileProvider>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/auth" element={<AuthPage />} />
-         <Route path="/register" element={<RegisterPage />} />
-          <Route path="/books" element={<BooksPage />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/legal" element={<LegalNotice />} />
-        <Route
-          path="/profiles"
-          element={
-            <ProtectedRoute>
-              <ProfileSelector />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/child/:profileId"
-          element={
-            <ProtectedRoute>
-              <ChildSpace />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/parent"
-          element={
-            <ProtectedRoute>
-              <ParentSpace />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute>
-              <AdminSpace />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/employee"
-          element={
-            <ProtectedRoute>
-              <EmployeeSpace />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/search" element={<SearchPage />} />
-        <Route
-          path="/library/:profileId"
-          element={
-            <ProtectedRoute>
-              <Library />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/books/:id" element={<BookDetails />} />
-      </Routes>
-        </ProfileProvider>
-    </AuthProvider>
-  );
+    return (
+        <AuthProvider>
+            <ProfileProvider>
+                <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/auth" element={<AuthPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/books" element={<BooksPage />} />
+                    <Route path="/privacy" element={<PrivacyPolicy />} />
+                    <Route path="/legal" element={<LegalNotice />} />
+
+                    <Route
+                        path="/profiles"
+                        element={
+                            <ProtectedRoute>
+                                <ProfileSelector />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/child/:profileId"
+                        element={
+                            <ProtectedRoute>
+                                <ChildSpace />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    {/* NOUVEAU : Wishlist enfant */}
+                    <Route
+                        path="/child/:profileId/wishlist"
+                        element={
+                            <ProtectedRoute>
+                                <ChildWishlistPage />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/parent"
+                        element={
+                            <ProtectedRoute>
+                                <ParentSpace />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/admin"
+                        element={
+                            <ProtectedRoute>
+                                <AdminSpace />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/employee"
+                        element={
+                            <ProtectedRoute>
+                                <EmployeeSpace />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    <Route path="/search" element={<SearchPage />} />
+
+                    <Route
+                        path="/library/:profileId"
+                        element={
+                            <ProtectedRoute>
+                                <Library />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    <Route path="/books/:id" element={<BookDetails />} />
+                </Routes>
+            </ProfileProvider>
+        </AuthProvider>
+    );
 };
 
 export default App;

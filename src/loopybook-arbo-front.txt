@@ -142,6 +142,7 @@ C:.
 |       BookDetails.tsx
 |       BooksPage.tsx
 |       ChildSpace.tsx
+|       ChildWishlistPage.tsx
 |       EmployeeSpace.tsx
 |       HomePage.tsx
 |       LegalNotice.tsx
@@ -154,3 +155,5 @@ C:.
 |       SearchPage.tsx
 |       
 \---services
+        childWishlistService.ts
+        

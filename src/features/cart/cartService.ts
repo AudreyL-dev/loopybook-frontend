@@ -2,156 +2,154 @@
 // Service front pour lire et modifier le panier du parent (LOOP-23).
 
 export type ParentCartItem = {
-    cartItemId: number;
+  cartItemId: number;
 
-    childId: number | null;
-    childUsername: string | null;
+  childId: number | null;
+  childUsername: string | null;
 
-    bookId: number;
-    title: string;
-    author: string;
+  bookId: number;
+  title: string;
+  author: string;
 
-    coverUrlFront: string | null;
-    coverUrlBack: string | null;
+  coverUrlFront: string | null;
+  coverUrlBack: string | null;
 
-    price: string; // BigDecimal côté back => JSON souvent string
-    status: "PENDING" | "WISHLIST" | "ORDERED" | "RECEIVED";
+  price: string;
 
-    addedAt: string; // ISO
+  status: "PENDING" | "REQUESTED" | "WISHLIST" | "ORDERED" | "RECEIVED";
+
+  addedAt: string;
 };
 
 type FetchOptions = {
-    signal?: AbortSignal;
+  signal?: AbortSignal;
 };
 
 const API_BASE_URL = "http://localhost:8081";
 
-/**
- * Récupère le panier PENDING d'un parent.
- * Optionnellement filtré sur un enfant.
- */
 export async function fetchParentCart(
-    parentId: number,
-    childId?: number,
-    options: FetchOptions = {}
+  parentId: number,
+  childId?: number,
+  options: FetchOptions = {}
 ): Promise<ParentCartItem[]> {
-    if (!Number.isFinite(parentId) || parentId <= 0) {
-        throw new Error("parentId invalide");
+  if (!Number.isFinite(parentId) || parentId <= 0) {
+    throw new Error("parentId invalide");
+  }
+
+  const url = new URL(`${API_BASE_URL}/api/cart/parent/${parentId}`);
+
+  if (childId !== undefined) {
+    if (!Number.isFinite(childId) || childId <= 0) {
+      throw new Error("childId invalide");
     }
+    url.searchParams.set("childId", String(childId));
+  }
 
-    const url = new URL(`${API_BASE_URL}/api/cart/parent/${parentId}`);
+  const response = await fetch(url.toString(), {
+    method: "GET",
+    headers: { Accept: "application/json" },
+    signal: options.signal,
+  });
 
-    if (childId !== undefined) {
-        if (!Number.isFinite(childId) || childId <= 0) {
-            throw new Error("childId invalide");
-        }
-        url.searchParams.set("childId", String(childId));
-    }
+  if (!response.ok) {
+    throw new Error("Impossible de charger le panier du parent");
+  }
 
-    const response = await fetch(url.toString(), {
-        method: "GET",
-        headers: {
-            Accept: "application/json",
-        },
-        signal: options.signal,
-    });
-
-    if (!response.ok) {
-        throw new Error("Impossible de charger le panier du parent");
-    }
-
-    return response.json();
+  return response.json();
 }
 
-/**
- * Valide un item du panier.
- * Passe son statut à ORDERED.
- */
 export async function orderCartItem(cartItemId: number): Promise<void> {
-    if (!Number.isFinite(cartItemId) || cartItemId <= 0) {
-        throw new Error("cartItemId invalide");
-    }
+  if (!Number.isFinite(cartItemId) || cartItemId <= 0) {
+    throw new Error("cartItemId invalide");
+  }
 
-    const response = await fetch(
-        `${API_BASE_URL}/api/cart/items/${cartItemId}/order`,
-        {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-            },
-        }
-    );
+  const response = await fetch(`${API_BASE_URL}/api/cart/items/${cartItemId}/order`, {
+    method: "POST",
+    headers: { Accept: "application/json" },
+  });
 
-    if (!response.ok) {
-        throw new Error("Impossible de valider l’item du panier");
-    }
+  if (!response.ok) {
+    throw new Error("Impossible de valider l’item du panier");
+  }
 }
 
-/**
- * Met un item du panier de côté.
- * Passe son statut à WISHLIST.
- */
 export async function wishlistCartItem(cartItemId: number): Promise<void> {
-    if (!Number.isFinite(cartItemId) || cartItemId <= 0) {
-        throw new Error("cartItemId invalide");
-    }
+  if (!Number.isFinite(cartItemId) || cartItemId <= 0) {
+    throw new Error("cartItemId invalide");
+  }
 
-    const response = await fetch(
-        `${API_BASE_URL}/api/cart/items/${cartItemId}/wishlist`,
-        {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-            },
-        }
-    );
+  const response = await fetch(`${API_BASE_URL}/api/cart/items/${cartItemId}/wishlist`, {
+    method: "POST",
+    headers: { Accept: "application/json" },
+  });
 
-    if (!response.ok) {
-        throw new Error("Impossible de mettre l’item de côté");
-    }
+  if (!response.ok) {
+    throw new Error("Impossible de mettre l’item de côté");
+  }
 }
 
-/**
- * Supprime un item du panier.
- */
 export async function deleteCartItem(cartItemId: number): Promise<void> {
-    if (!Number.isFinite(cartItemId) || cartItemId <= 0) {
-        throw new Error("cartItemId invalide");
-    }
+  if (!Number.isFinite(cartItemId) || cartItemId <= 0) {
+    throw new Error("cartItemId invalide");
+  }
 
-    const response = await fetch(
-        `${API_BASE_URL}/api/cart/items/${cartItemId}`,
-        {
-            method: "DELETE",
-            headers: {
-                Accept: "application/json",
-            },
-        }
-    );
+  const response = await fetch(`${API_BASE_URL}/api/cart/items/${cartItemId}`, {
+    method: "DELETE",
+    headers: { Accept: "application/json" },
+  });
 
-    if (!response.ok) {
-        throw new Error("Impossible de supprimer l’item du panier");
-    }
+  if (!response.ok) {
+    throw new Error("Impossible de supprimer l’item du panier");
+  }
 }
 
 /**
- * Convertit un prix JSON (string) en nombre utilisable.
+ * Enfant : "Demander ce livre"
+ * => POST /api/cart/requests
+ * Body : { childId, bookId }
+ * parentId déduit côté back.
  */
+export async function requestBookForParentCart(params: {
+  childId: number;
+  bookId: number;
+}): Promise<"CREATED" | "ALREADY_EXISTS"> {
+  const { childId, bookId } = params;
+
+  if (!Number.isFinite(childId) || childId <= 0) throw new Error("childId invalide");
+  if (!Number.isFinite(bookId) || bookId <= 0) throw new Error("bookId invalide");
+
+  const response = await fetch(`${API_BASE_URL}/api/cart/requests`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({ childId, bookId }),
+  });
+
+  if (response.status === 409) return "ALREADY_EXISTS";
+  if (!response.ok) throw new Error("Impossible de demander ce livre");
+
+  return "CREATED";
+}
+
 export function parsePriceToNumber(price: string): number {
-    const value = Number(price);
-    return Number.isFinite(value) ? value : 0;
+  const value = Number(price);
+  return Number.isFinite(value) ? value : 0;
 }
 
-/**
- * Calcule le total du panier.
- */
 export function computeCartTotal(items: ParentCartItem[]): number {
-    return items.reduce((sum, item) => sum + parsePriceToNumber(item.price), 0);
+  return items.reduce((sum, item) => sum + parsePriceToNumber(item.price), 0);
+}
+
+export function formatEuro(amount: number): string {
+  return amount.toFixed(2).replace(".", ",") + " €";
 }
 
 /**
- * Formatte un montant en euros (format FR).
+ * Indique si un livre est déjà présent dans le panier du parent
+ * (REQUESTED ou PENDING, selon ce que renvoie l'API /api/cart/parent/{id}).
  */
-export function formatEuro(amount: number): string {
-    return amount.toFixed(2).replace(".", ",") + " €";
+export function isBookInParentCart(items: ParentCartItem[], bookId: number): boolean {
+  return items.some((it) => it.bookId === bookId);
 }

@@ -5,6 +5,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import Header from "../components/layout/Header.tsx";
+import { childWishlistService } from "../services/childWishlistService";
 
 type ViewerMode = "parent" | "child";
 
@@ -55,6 +56,9 @@ const BooksPage: React.FC = () => {
 
     // index de couverture par livre (0 = première, 1 = deuxième…)
     const [coverIndexByBook, setCoverIndexByBook] = useState<CoverIndexState>({});
+
+    // Force un rerender quand on toggle la wishlist (stockée en localStorage)
+    const [wishlistVersion, setWishlistVersion] = useState<number>(0);
 
     useEffect(() => {
         const fetchBooks = async () => {
@@ -143,9 +147,19 @@ const BooksPage: React.FC = () => {
     };
 
     const handleLike = (bookId: number) => {
-        // TODO : brancher sur le flux "j'aime" (wishlist enfant -> panier parent).
-        console.log("child like book", { bookId, childId: locationState.childId });
+        const childId = locationState.childId;
+
+        if (!childId) {
+            console.warn("Mode enfant sans childId : like ignoré.");
+            return;
+        }
+
+        childWishlistService.toggle(childId, bookId);
+        setWishlistVersion((v) => v + 1);
     };
+
+    // (wishlistVersion est volontairement référencé pour rerender quand on toggle)
+    void wishlistVersion;
 
     return (
         <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#3DCCC7]/10 to-[#AEEA7C]/10">
@@ -179,6 +193,17 @@ const BooksPage: React.FC = () => {
                             value={search}
                             onChange={(event) => setSearch(event.target.value)}
                         />
+
+                        {viewerMode === "child" && locationState.childId && (
+                            <div className="mt-2">
+                                <Link
+                                    to={`/child/${locationState.childId}/wishlist`}
+                                    className="inline-flex items-center justify-center rounded-full bg-white border border-slate-200 px-4 py-2 text-[12px] font-bold text-slate-800 hover:bg-slate-50 transition"
+                                >
+                                    Ma liste de souhaits
+                                </Link>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -211,6 +236,12 @@ const BooksPage: React.FC = () => {
                             const activeIndex = coverIndexByBook[book.id] ?? 0;
                             const activeCover = covers[activeIndex] ?? covers[0] ?? null;
                             const hasCarousel = covers.length > 1;
+
+                            const childId = locationState.childId;
+                            const liked =
+                                viewerMode === "child" && !!childId
+                                    ? childWishlistService.isLiked(childId, book.id)
+                                    : false;
 
                             return (
                                 <article
@@ -318,9 +349,13 @@ const BooksPage: React.FC = () => {
                                                 <button
                                                     type="button"
                                                     onClick={() => handleLike(book.id)}
-                                                    className="rounded-full bg-[#AEEA7C] px-4 py-2 text-[12px] font-bold text-slate-900 hover:brightness-95 active:brightness-90 transition"
+                                                    className={`rounded-full px-4 py-2 text-[12px] font-bold transition ${
+                                                        liked
+                                                            ? "bg-slate-200 text-slate-700 hover:bg-slate-300"
+                                                            : "bg-[#AEEA7C] text-slate-900 hover:brightness-95 active:brightness-90"
+                                                    }`}
                                                 >
-                                                    J’aime
+                                                    {liked ? "Aimé" : "J’aime"}
                                                 </button>
                                             </div>
                                         )}
